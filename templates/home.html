@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<section class="hero-panel">
+  <p class="eyebrow">Read-only · Local demo</p>
+  <h1>Demo<span>Monitor</span></h1>
+  <p class="lede">
+    Placeholder dashboard for Linux CPU, memory, network, and port visibility.
+    Sign-in and live metrics land in later steps.
+  </p>
+</section>
+
+<section class="dash-shell" aria-label="Server list placeholder">
+  <div class="dash-head">
+    <h2>Servers</h2>
+    <p class="meta">No servers yet — inventory comes next.</p>
+  </div>
+  <div class="empty-card">
+    <p>Monitoring cards will appear here after servers are added.</p>
+  </div>
+</section>
+{% endblock %}

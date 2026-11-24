@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Sign in{% endblock %}
+{% block content %}
+<section class="auth-layout">
+  <div class="auth-copy">
+    <p class="eyebrow">Internal demo</p>
+    <h1>Demo<span>Monitor</span></h1>
+    <p class="lede">Sign in to view read-only Linux metrics. Default user is <code>admin</code>.</p>
+  </div>
+  <form class="auth-form" method="post" action="{{ url_for('login') }}" autocomplete="current-password">
+    <h2>Sign in</h2>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul class="flashes">
+          {% for category, message in messages %}
+            <li class="flash flash-{{ category }}">{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+    <label>
+      Username
+      <input type="text" name="username" value="admin" required autofocus>
+    </label>
+    <label>
+      Password
+      <input type="password" name="password" required placeholder="••••••••">
+    </label>
+    <button type="submit" class="btn primary">Continue</button>
+  </form>
+</section>
+{% endblock %}
