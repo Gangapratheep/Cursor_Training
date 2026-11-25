@@ -9,15 +9,6 @@
   </div>
   <form class="auth-form" method="post" action="{{ url_for('login') }}" autocomplete="current-password">
     <h2>Sign in</h2>
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        <ul class="flashes">
-          {% for category, message in messages %}
-            <li class="flash flash-{{ category }}">{{ message }}</li>
-          {% endfor %}
-        </ul>
-      {% endif %}
-    {% endwith %}
     <label>
       Username
       <input type="text" name="username" value="admin" required autofocus>

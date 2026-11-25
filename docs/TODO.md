@@ -46,22 +46,24 @@ See [auth.md](./auth.md). CI: [`.github/workflows/ci.yml`](../.github/workflows/
 
 ## Phase 2 — Server inventory (CRUD)
 
-- [ ] **2.1** `Server` model (display name, hostname/IP, SSH port, username, auth type, password/key path)
+See [servers.md](./servers.md). CI still runs full `pytest` (same workflow).
+
+- [x] **2.1** `Server` model (display name, hostname/IP, SSH port, username, auth type, password/key path)
   - Security: mark SSH password field as sensitive; plan not to echo it in HTML value attrs on edit (blank = keep existing)
   - Docs: field list in a short `docs/servers.md`
-- [ ] **2.2** Add-server form + create route (validated required fields)
+- [x] **2.2** Add-server form + create route (validated required fields)
   - Security: CSRF later if time; for demo at least require login + validate/sanitize inputs; reject path traversal on key paths where practical
   - Docs: how to add a server (local vs SSH)
-- [ ] **2.3** List servers on dashboard (names/hosts only — no metrics yet)
+- [x] **2.3** List servers on dashboard (names/hosts only — no metrics yet)
   - Security: authorize all routes with login; do not expose SSH passwords in list/JSON
   - Docs: update UI note
-- [ ] **2.4** Edit + delete server (POST for delete)
+- [x] **2.4** Edit + delete server (POST for delete)
   - Security: POST-only delete; confirm in UI; no mass assignment of unexpected fields
   - Docs: edit/delete steps
-- [ ] **2.5** Unit tests for create/edit/delete and “password not returned in page/API”
+- [x] **2.5** Unit tests for create/edit/delete and “password not returned in page/API”
   - Security: assert secrets absent from responses
   - Docs: mention tests in `docs/servers.md`
-- [ ] **2.6** Extend CI to run new tests (same workflow)
+- [x] **2.6** Extend CI to run new tests (same workflow)
 
 ---
 
