@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "flask-python": {
+      "source": "mindrally/skills",
+      "sourceType": "github",
+      "skillPath": "flask-python/SKILL.md",
+      "computedHash": "9387a280ffd3495419c44aafffb67932181bb3036d3ed82d7ec44dc5c2a31395"
+    }
+  }
+}

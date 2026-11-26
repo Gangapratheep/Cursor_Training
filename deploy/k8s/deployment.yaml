@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demomonitor
+  namespace: demomonitor
+  labels:
+    app: demomonitor
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: demomonitor
+  template:
+    metadata:
+      labels:
+        app: demomonitor
+    spec:
+      containers:
+        - name: demomonitor
+          image: demomonitor:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5000
+              name: http
+          env:
+            - name: FLASK_ENV
+              value: production
+            - name: BIND_HOST
+              value: "0.0.0.0"
+            - name: BIND_PORT
+              value: "5000"
+            - name: FLASK_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: demomonitor-secrets
+                  key: FLASK_SECRET_KEY
+            - name: ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: demomonitor-secrets
+                  key: ADMIN_PASSWORD
+          volumeMounts:
+            - name: data
+              mountPath: /app/instance
+          readinessProbe:
+            httpGet:
+              path: /login
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /login
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: demomonitor-pvc

@@ -78,7 +78,7 @@ def test_local_metrics_json(mock_psutil, client, app):
     assert b"secret-should-never-appear" not in response.data
 
 
-@patch("app.collect_for_server")
+@patch("blueprints.api.collect_for_server")
 def test_batch_metrics_and_detail_page(mock_collect, client, app):
     mock_collect.return_value = {
         "server_id": 1,
@@ -208,3 +208,28 @@ def test_sanitize_error_redacts_paths():
     msg = sanitize_error("failed reading /home/jumpuser19/.ssh/id_rsa detail")
     assert "/home/" not in msg
     assert "[path]" in msg
+
+
+def test_host_key_policy_defaults_to_reject(monkeypatch):
+    import paramiko
+
+    from metrics.ssh import _host_key_policy
+
+    monkeypatch.delenv("SSH_AUTO_ADD_HOST_KEYS", raising=False)
+    assert isinstance(_host_key_policy(), paramiko.RejectPolicy)
+
+    monkeypatch.setenv("SSH_AUTO_ADD_HOST_KEYS", "1")
+    assert isinstance(_host_key_policy(), paramiko.AutoAddPolicy)
+
+
+def test_production_rejects_weak_secrets(monkeypatch):
+    import pytest
+
+    from app import create_app
+
+    monkeypatch.setenv("FLASK_ENV", "production")
+    monkeypatch.setenv("FLASK_SECRET_KEY", "demo-dev-secret")
+    monkeypatch.setenv("ADMIN_PASSWORD", "admin123")
+    with pytest.raises(RuntimeError, match="FLASK_SECRET_KEY"):
+        create_app()
+

@@ -1,11 +1,13 @@
-"""Remote Linux metrics over SSH (Paramiko). Demo-only host-key policy."""
+"""Remote Linux metrics over SSH (Paramiko)."""
 
 from __future__ import annotations
 
+import os
 import re
 import socket
 import time
 from datetime import datetime, timezone
+from pathlib import Path
 from typing import Any, Optional
 
 import paramiko
@@ -22,6 +24,17 @@ SSH_CONNECT_TIMEOUT = 8
 SSH_CMD_TIMEOUT = 10
 
 
+def _host_key_policy() -> paramiko.MissingHostKeyPolicy:
+    """
+    Default: RejectPolicy (unknown hosts fail closed).
+    Opt-in demo MITM-prone mode: SSH_AUTO_ADD_HOST_KEYS=1|true|yes
+    """
+    flag = (os.environ.get("SSH_AUTO_ADD_HOST_KEYS") or "").strip().lower()
+    if flag in {"1", "true", "yes"}:
+        return paramiko.AutoAddPolicy()
+    return paramiko.RejectPolicy()
+
+
 def connect_ssh(
     *,
     hostname: str,
@@ -30,14 +43,12 @@ def connect_ssh(
     password: Optional[str] = None,
     key_path: Optional[str] = None,
 ) -> paramiko.SSHClient:
-    """
-    Open an SSH session.
-
-    Demo only: AutoAddPolicy accepts unknown host keys (MITM risk). Prefer
-    known_hosts pinning outside this demo.
-    """
+    """Open an SSH session with known_hosts loaded when present."""
     client = paramiko.SSHClient()
-    client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    known_hosts = Path.home() / ".ssh" / "known_hosts"
+    if known_hosts.is_file():
+        client.load_host_keys(str(known_hosts))
+    client.set_missing_host_key_policy(_host_key_policy())
     connect_kwargs: dict[str, Any] = {
         "hostname": hostname,
         "port": port,

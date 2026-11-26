@@ -14,12 +14,12 @@
 
   {% if session.get('user_id') %}
   <header class="topbar">
-    <a class="brand" href="{{ url_for('home') }}">Demo<span>Monitor</span></a>
+    <a class="brand" href="{{ url_for('servers.home') }}">Demo<span>Monitor</span></a>
     <nav class="topnav" aria-label="Primary">
-      <a href="{{ url_for('home') }}">Dashboard</a>
-      <a href="{{ url_for('server_new') }}">Add server</a>
+      <a href="{{ url_for('servers.home') }}">Dashboard</a>
+      <a href="{{ url_for('servers.server_new') }}">Add server</a>
       <span class="user-chip">{{ session.get('username') }}</span>
-      <a class="ghost" href="{{ url_for('logout') }}">Sign out</a>
+      <a class="ghost" href="{{ url_for('auth.logout') }}">Sign out</a>
     </nav>
   </header>
   {% endif %}

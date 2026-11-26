@@ -7,7 +7,7 @@
     <h1>Demo<span>Monitor</span></h1>
     <p class="lede">Sign in to view read-only Linux metrics. Default user is <code>admin</code>.</p>
   </div>
-  <form class="auth-form" method="post" action="{{ url_for('login') }}" autocomplete="current-password">
+  <form class="auth-form" method="post" action="{{ url_for('auth.login') }}" autocomplete="current-password">
     <h2>Sign in</h2>
     <label>
       Username

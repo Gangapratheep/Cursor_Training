@@ -1,0 +1,21 @@
+# Optional — requires an Ingress controller (e.g. nginx).
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: demomonitor
+  namespace: demomonitor
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: demomonitor.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: demomonitor
+                port:
+                  name: http

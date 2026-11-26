@@ -1,6 +1,8 @@
-# Metrics (Phases 3–5)
+# Metrics
 
-Read-only collection for registered servers. No remote shell from the UI; no kill/firewall actions.
+Read-only collection for registered servers. Collectors: `metrics/`. API: `blueprints/api.py` (Flask-RESTful + Marshmallow).
+
+No remote shell from the UI; no kill-process or firewall actions.
 
 ## Local collection (psutil)
 
@@ -9,15 +11,15 @@ Used when auth type is `local`, or hostname is `localhost` / `127.0.0.1` / `::1`
 | Field | Source |
 |-------|--------|
 | `cpu_percent` | `psutil.cpu_percent` |
-| `memory` | `psutil.virtual_memory` (`used_bytes`, `total_bytes`, `percent`) |
-| `network` | `psutil.net_io_counters` (`bytes_recv`, `bytes_sent`) |
+| `memory` | `psutil.virtual_memory` |
+| `network` | `psutil.net_io_counters` |
 | `listening_ports` | `psutil.net_connections` (LISTEN only) |
 
 ## Remote collection (Paramiko / SSH)
 
-Password or key auth. Connect timeout ~8s.
+Password or key auth. Connect timeout **8s**; command timeout **10s**.
 
-**Demo warning:** unknown host keys are accepted (`AutoAddPolicy`). That is MITM-prone — pin `known_hosts` outside this demo. Passwords/keys are never logged or returned in JSON/HTML.
+**Host keys:** loads `~/.ssh/known_hosts` when present; unknown hosts are **rejected** by default (`RejectPolicy`). For a local demo that must accept first-time hosts, set `SSH_AUTO_ADD_HOST_KEYS=1` (MITM-prone — avoid in real environments). Passwords/keys are never logged or returned in JSON/HTML.
 
 ### Fixed commands (no user input interpolated)
 
@@ -61,13 +63,15 @@ All routes require login. Payloads never include SSH passwords or key material.
 
 `GET /api/servers/metrics` → `{ "servers": [ { "id", "display_name", "hostname", "ssh_port", "auth_type", "metrics": {…} } ] }`
 
+Schemas: `schemas/metrics.py`, `schemas/server.py` (`ServerPublicSchema`).
+
 ## UI refresh
 
-Dashboard cards and the detail page auto-refresh about every **10 seconds**, with a **Refresh now** control. JS only calls the APIs above (local static script).
+Dashboard cards and the detail page auto-refresh about every **10 seconds**, with **Refresh now**. JS only calls the APIs above (`static/js/metrics.js`).
 
 ## Tests
 
-Local paths mock `psutil`. Remote paths mock the SSH client (`connect_ssh`) for success, auth failure, and timeout — no real external SSH in CI.
+Local paths mock `psutil`. Remote paths mock SSH (`connect_ssh`) — no real external SSH in CI.
 
 ```bash
 pytest tests/test_metrics.py

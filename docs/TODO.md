@@ -153,7 +153,10 @@ python app.py          # http://127.0.0.1:5000  (admin / ADMIN_PASSWORD)
 pytest
 ```
 
-Demo done locally: Flask + SQLite, bind `127.0.0.1`, hashed admin password, read-only metrics.
+Demo done locally: Flask + SQLite, bind `127.0.0.1`, hashed admin password, read-only metrics.  
+Post–flask-python layout: blueprints + Marshmallow + Migrate — see [architecture.md](./architecture.md).  
+Optional k8s packaging: [deploy.md](./deploy.md) · `deploy/k8s/` · `Dockerfile`.  
+Doc index / run / API: [README.md](../README.md). Refresh docs via Cursor command `/documentation`.
 
 ---
 

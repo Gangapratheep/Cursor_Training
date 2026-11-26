@@ -9,7 +9,7 @@
   </p>
   <div class="toolbar">
     <button type="button" class="btn ghost-btn" id="refresh-btn">Refresh now</button>
-    <a class="btn primary" href="{{ url_for('server_new') }}">Add server</a>
+    <a class="btn primary" href="{{ url_for('servers.server_new') }}">Add server</a>
     <span class="meta" id="refresh-meta">Auto-refresh every 10s</span>
   </div>
 </section>
@@ -33,7 +33,7 @@
     <article class="server-card" data-server-id="{{ s.id }}" id="server-card-{{ s.id }}">
       <div class="server-card-top">
         <div>
-          <a class="server-title" href="{{ url_for('server_detail', server_id=s.id) }}">{{ s.display_name }}</a>
+          <a class="server-title" href="{{ url_for('servers.server_detail', server_id=s.id) }}">{{ s.display_name }}</a>
           <p class="mono">{{ s.hostname }}{% if s.auth_type != 'local' %}:{{ s.ssh_port }}{% endif %}</p>
         </div>
         <span class="status-pill status-loading" data-role="status">loading</span>
@@ -46,9 +46,9 @@
       </dl>
       <p class="card-error" data-role="error" hidden></p>
       <div class="server-actions">
-        <a class="btn ghost-btn" href="{{ url_for('server_detail', server_id=s.id) }}">Details</a>
-        <a class="btn ghost-btn" href="{{ url_for('server_edit', server_id=s.id) }}">Edit</a>
-        <form method="post" action="{{ url_for('server_delete', server_id=s.id) }}" class="inline-form"
+        <a class="btn ghost-btn" href="{{ url_for('servers.server_detail', server_id=s.id) }}">Details</a>
+        <a class="btn ghost-btn" href="{{ url_for('servers.server_edit', server_id=s.id) }}">Edit</a>
+        <form method="post" action="{{ url_for('servers.server_delete', server_id=s.id) }}" class="inline-form"
               onsubmit="return confirm('Remove server {{ s.display_name }}?');">
           <button type="submit" class="btn danger">Delete</button>
         </form>

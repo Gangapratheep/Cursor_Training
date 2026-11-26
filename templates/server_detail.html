@@ -11,8 +11,8 @@
   </p>
   <div class="toolbar">
     <button type="button" class="btn ghost-btn" id="refresh-btn">Refresh now</button>
-    <a class="btn ghost-btn" href="{{ url_for('server_edit', server_id=server.id) }}">Edit</a>
-    <a class="btn ghost-btn" href="{{ url_for('home') }}">Dashboard</a>
+    <a class="btn ghost-btn" href="{{ url_for('servers.server_edit', server_id=server.id) }}">Edit</a>
+    <a class="btn ghost-btn" href="{{ url_for('servers.home') }}">Dashboard</a>
     <span class="meta" id="refresh-meta">Auto-refresh every 10s</span>
   </div>
 </section>

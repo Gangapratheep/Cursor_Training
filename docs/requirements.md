@@ -75,8 +75,11 @@ Today, checking live memory, CPU, network, and port usage requires logging into 
 
 1. Create venv and install dependencies from `requirements.txt`
 2. Set admin password via env or one-time seed (hashed in DB)
-3. Run: `flask run` or `python app.py`
+3. Run: `python app.py` (binds `127.0.0.1`)
 4. Open `http://127.0.0.1:5000`, sign in as `admin`, add servers
+
+See [README.md](../README.md) and [architecture.md](./architecture.md) for current module layout.  
+Optional cluster packaging (not required for the demo acceptance above): [deploy.md](./deploy.md).
 
 ## 8. Acceptance criteria (demo)
 

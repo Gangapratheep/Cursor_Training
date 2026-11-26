@@ -9,9 +9,10 @@ Local Flask + SQLite Linux monitoring demo. Prefer clarity over scale. No Docker
 
 ## Stack & layout
 
-- Entry: `app.py` + `models.py`; metrics in `metrics/`; templates + `static/`; tests in `tests/`; docs in `docs/`
+- Entry: `app.py` factory; blueprints in `blueprints/`; `models.py`; `schemas/`; metrics in `metrics/`; templates + `static/`; tests in `tests/`; docs in `docs/`
 - Deps in `requirements.txt` with major-version pins
 - Bind **`127.0.0.1` only**; secrets via env (`.env.example`, never commit `.env`)
+- Prefer blueprints + Marshmallow for APIs; keep **session cookie** auth for this demo (not JWT)
 
 ## Security (non-negotiable)
 
@@ -19,7 +20,7 @@ Local Flask + SQLite Linux monitoring demo. Prefer clarity over scale. No Docker
 - SSH secrets: never echo in HTML `value=` or JSON; blank edit field = keep existing
 - Metrics APIs and server routes require login; payloads must not include `ssh_password` / key material
 - Remote metrics: **fixed command strings only** (no user input in shell); sanitize/truncate errors
-- Host-key `AutoAddPolicy` is demo-only — keep the warning in `docs/metrics.md`
+- Host keys: default `RejectPolicy` + `~/.ssh/known_hosts`; `SSH_AUTO_ADD_HOST_KEYS=1` is demo-only MITM risk — keep the warning in `docs/metrics.md`
 - Do not gitignore `.github/workflows/`; CI uses dummy env secrets only
 
 ## Features & docs
