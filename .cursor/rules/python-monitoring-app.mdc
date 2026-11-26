@@ -1,0 +1,43 @@
+---
+description: Flask DemoMonitor conventions — local demo, security, metrics, tests, docs
+alwaysApply: true
+---
+
+# DemoMonitor Python app
+
+Local Flask + SQLite Linux monitoring demo. Prefer clarity over scale. No Docker/cloud deploy.
+
+## Stack & layout
+
+- Entry: `app.py` + `models.py`; metrics in `metrics/`; templates + `static/`; tests in `tests/`; docs in `docs/`
+- Deps in `requirements.txt` with major-version pins
+- Bind **`127.0.0.1` only**; secrets via env (`.env.example`, never commit `.env`)
+
+## Security (non-negotiable)
+
+- Hash passwords (`werkzeug`); never log or flash passwords/keys
+- SSH secrets: never echo in HTML `value=` or JSON; blank edit field = keep existing
+- Metrics APIs and server routes require login; payloads must not include `ssh_password` / key material
+- Remote metrics: **fixed command strings only** (no user input in shell); sanitize/truncate errors
+- Host-key `AutoAddPolicy` is demo-only — keep the warning in `docs/metrics.md`
+- Do not gitignore `.github/workflows/`; CI uses dummy env secrets only
+
+## Features & docs
+
+- Follow `docs/TODO.md` phases; update matching docs (`auth.md`, `servers.md`, `metrics.md`, `ci.md`) with behavior changes
+- Read-only metrics UI — no kill-process, firewall, or remote shell from the UI
+- Dashboard/detail: ~10s auto-refresh + manual refresh via same-origin APIs only
+
+## Tests & CI
+
+- Add/adjust `pytest` for auth, CRUD, and metrics; mock `psutil` / SSH — no live external SSH in CI
+- Assert secrets absent from responses; assert failure cases (bad login, unreachable, auth fail)
+- Keep `.github/workflows/ci.yml` green: install `requirements.txt`, run `pytest`
+
+```python
+# ❌ BAD — interpolate hostname into shell
+client.exec_command(f"cat /proc/stat {user_flag}")
+
+# ✅ GOOD — fixed read-only command
+client.exec_command("cat /proc/stat")
+```

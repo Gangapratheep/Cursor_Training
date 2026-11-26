@@ -9,4 +9,3 @@ instance/
 .DS_Store
 .idea/
 .vscode/
-.github/workflows/
