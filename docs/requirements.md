@@ -80,11 +80,11 @@ Today, checking live memory, CPU, network, and port usage requires logging into 
 
 ## 8. Acceptance criteria (demo)
 
-- [ ] Login works only with `admin` + correct password; password is hashed at rest
-- [ ] Logged-in user can add, edit, and delete Linux server entries
-- [ ] Dashboard and detail pages show CPU, memory, network, and listening ports
-- [ ] UI is read-only for metrics; refresh updates values without page redesign
-- [ ] App runs locally with Flask + SQLite without Docker
+- [x] Login works only with `admin` + correct password; password is hashed at rest
+- [x] Logged-in user can add, edit, and delete Linux server entries
+- [x] Dashboard and detail pages show CPU, memory, network, and listening ports
+- [x] UI is read-only for metrics; refresh updates values without page redesign
+- [x] App runs locally with Flask + SQLite without Docker
 
 ## 9. Non-functional (demo-level)
 
