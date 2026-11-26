@@ -5,18 +5,42 @@
   <p class="eyebrow">Read-only · Local demo</p>
   <h1>Demo<span>Monitor</span></h1>
   <p class="lede">
-    Placeholder dashboard for Linux CPU, memory, network, and port visibility.
-    Sign-in and live metrics land in later steps.
+    Server inventory for Linux hosts. Metrics collection lands in the next phase.
   </p>
 </section>
 
-<section class="dash-shell" aria-label="Server list placeholder">
+<section class="dash-shell" aria-label="Server list">
   <div class="dash-head">
     <h2>Servers</h2>
-    <p class="meta">No servers yet — inventory comes next.</p>
+    <p class="meta">
+      {% if servers %}{{ servers|length }} registered{% else %}No servers yet{% endif %}
+      · <a href="{{ url_for('server_new') }}">Add server</a>
+    </p>
   </div>
+
+  {% if not servers %}
   <div class="empty-card">
-    <p>Monitoring cards will appear here after servers are added.</p>
+    <p>No servers registered. Add a local or remote Linux host to get started.</p>
   </div>
+  {% else %}
+  <ul class="server-list">
+    {% for s in servers %}
+    <li class="server-row">
+      <div class="server-main">
+        <strong>{{ s.display_name }}</strong>
+        <span class="mono">{{ s.hostname }}{% if s.auth_type != 'local' %}:{{ s.ssh_port }}{% endif %}</span>
+        <span class="badge">{{ s.auth_type }}</span>
+      </div>
+      <div class="server-actions">
+        <a class="btn ghost-btn" href="{{ url_for('server_edit', server_id=s.id) }}">Edit</a>
+        <form method="post" action="{{ url_for('server_delete', server_id=s.id) }}" class="inline-form"
+              onsubmit="return confirm('Remove server {{ s.display_name }}?');">
+          <button type="submit" class="btn danger">Delete</button>
+        </form>
+      </div>
+    </li>
+    {% endfor %}
+  </ul>
+  {% endif %}
 </section>
 {% endblock %}

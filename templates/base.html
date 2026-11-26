@@ -17,7 +17,7 @@
     <a class="brand" href="{{ url_for('home') }}">Demo<span>Monitor</span></a>
     <nav class="topnav" aria-label="Primary">
       <a href="{{ url_for('home') }}">Dashboard</a>
-      <span class="nav-muted">Add server</span>
+      <a href="{{ url_for('server_new') }}">Add server</a>
       <span class="user-chip">{{ session.get('username') }}</span>
       <a class="ghost" href="{{ url_for('logout') }}">Sign out</a>
     </nav>
@@ -25,6 +25,15 @@
   {% endif %}
 
   <main class="shell">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul class="flashes page-flashes">
+          {% for category, message in messages %}
+            <li class="flash flash-{{ category }}">{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
     {% block content %}{% endblock %}
   </main>
 </body>
