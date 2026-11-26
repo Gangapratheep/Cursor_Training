@@ -10,6 +10,7 @@ from dotenv import load_dotenv
 from flask import (
     Flask,
     flash,
+    jsonify,
     redirect,
     render_template,
     request,
@@ -17,6 +18,7 @@ from flask import (
     url_for,
 )
 
+from metrics import collect_for_server
 from models import Server, User, db
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -220,6 +222,42 @@ def register_routes(app: Flask) -> None:
         db.session.commit()
         flash(f"Server “{name}” removed.", "ok")
         return redirect(url_for("home"))
+
+    @app.route("/servers/<int:server_id>")
+    @login_required
+    def server_detail(server_id: int):
+        server = db.session.get(Server, server_id)
+        if server is None:
+            return ("Not found", 404)
+        return render_template("server_detail.html", server=server)
+
+    @app.route("/api/servers/<int:server_id>/metrics")
+    @login_required
+    def api_server_metrics(server_id: int):
+        server = db.session.get(Server, server_id)
+        if server is None:
+            return jsonify({"error": "Not found"}), 404
+        payload = collect_for_server(server)
+        return jsonify(payload)
+
+    @app.route("/api/servers/metrics")
+    @login_required
+    def api_servers_metrics_batch():
+        servers = Server.query.order_by(Server.display_name).all()
+        items = []
+        for server in servers:
+            metrics = collect_for_server(server)
+            items.append(
+                {
+                    "id": server.id,
+                    "display_name": server.display_name,
+                    "hostname": server.hostname,
+                    "ssh_port": server.ssh_port,
+                    "auth_type": server.auth_type,
+                    "metrics": metrics,
+                }
+            )
+        return jsonify({"servers": items})
 
 
 app = create_app()

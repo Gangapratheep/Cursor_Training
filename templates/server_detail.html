@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}{{ server.display_name }}{% endblock %}
+{% block content %}
+<section class="hero-panel detail-hero" data-server-id="{{ server.id }}">
+  <p class="eyebrow">Server detail · read-only</p>
+  <h1>{{ server.display_name }}</h1>
+  <p class="lede">
+    <span class="mono">{{ server.hostname }}{% if server.auth_type != 'local' %}:{{ server.ssh_port }}{% endif %}</span>
+    · <span class="badge">{{ server.auth_type }}</span>
+    · <span id="status-pill" class="status-pill status-loading">loading</span>
+  </p>
+  <div class="toolbar">
+    <button type="button" class="btn ghost-btn" id="refresh-btn">Refresh now</button>
+    <a class="btn ghost-btn" href="{{ url_for('server_edit', server_id=server.id) }}">Edit</a>
+    <a class="btn ghost-btn" href="{{ url_for('home') }}">Dashboard</a>
+    <span class="meta" id="refresh-meta">Auto-refresh every 10s</span>
+  </div>
+</section>
+
+<section class="metrics-grid" aria-label="Live metrics">
+  <article class="metric-card">
+    <h2>CPU</h2>
+    <p class="metric-value" id="metric-cpu">—</p>
+    <p class="meta">percent busy</p>
+  </article>
+  <article class="metric-card">
+    <h2>Memory</h2>
+    <p class="metric-value" id="metric-mem">—</p>
+    <p class="meta" id="metric-mem-detail">used / total</p>
+  </article>
+  <article class="metric-card">
+    <h2>Network</h2>
+    <p class="metric-value network-pair" id="metric-net">—</p>
+    <p class="meta">rx · tx (bytes)</p>
+  </article>
+  <article class="metric-card metric-card-wide">
+    <h2>Listening ports</h2>
+    <p class="meta" id="metric-error" hidden></p>
+    <div class="ports-wrap">
+      <table class="ports-table">
+        <thead>
+          <tr><th>Proto</th><th>Address</th><th>Port</th></tr>
+        </thead>
+        <tbody id="ports-body">
+          <tr><td colspan="3">Loading…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </article>
+</section>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/metrics.js') }}"></script>
+<script>
+  DemoMonitor.initDetail({{ server.id }});
+</script>
+{% endblock %}

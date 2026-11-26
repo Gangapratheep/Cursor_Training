@@ -69,55 +69,59 @@ See [servers.md](./servers.md). CI still runs full `pytest` (same workflow).
 
 ## Phase 3 — Local metrics (read-only)
 
-- [ ] **3.1** Add `psutil`; collect CPU %, memory used/total for **localhost** only
+See [metrics.md](./metrics.md).
+
+- [x] **3.1** Add `psutil`; collect CPU %, memory used/total for **localhost** only
   - Security: read-only APIs; no shell mutation commands
   - Docs: `docs/metrics.md` — local collection
-- [ ] **3.2** JSON endpoint for one server’s metrics (login-required) + show on detail page
+- [x] **3.2** JSON endpoint for one server’s metrics (login-required) + show on detail page
   - Security: login required; no eval of remote input; rate-limit not required for demo
   - Docs: endpoint path and sample fields
-- [ ] **3.3** Network rx/tx + listening ports for local host
+- [x] **3.3** Network rx/tx + listening ports for local host
   - Security: display only; do not offer kill-process or firewall actions
   - Docs: update metrics field list
-- [ ] **3.4** Unit tests with mocked `psutil` (no flaky live system asserts)
+- [x] **3.4** Unit tests with mocked `psutil` (no flaky live system asserts)
   - Security: tests don’t need real host privileges
   - Docs: how metrics tests are mocked
-- [ ] **3.5** CI still green
+- [x] **3.5** CI still green
 
 ---
 
 ## Phase 4 — SSH metrics (remote Linux)
 
-- [ ] **4.1** Add Paramiko; SSH connect helper with timeout; support password **or** key path
+See [metrics.md](./metrics.md).
+
+- [x] **4.1** Add Paramiko; SSH connect helper with timeout; support password **or** key path
   - Security: connect timeout; fail closed; AutoAddPolicy OK for **demo only** — document host-key risk; never log passwords/keys
   - Docs: SSH auth options + demo host-key warning in `docs/metrics.md`
-- [ ] **4.2** Remote read-only commands for CPU/mem (`/proc` preferred)
+- [x] **4.2** Remote read-only commands for CPU/mem (`/proc` preferred)
   - Security: fixed command strings only (no user-supplied shell); read `/proc` only
   - Docs: commands used (inventory for review)
-- [ ] **4.3** Remote network + listening ports (`ss`/`netstat` parse)
+- [x] **4.3** Remote network + listening ports (`ss`/`netstat` parse)
   - Security: same fixed commands; parse safely
   - Docs: update command list
-- [ ] **4.4** Status indicator: reachable / unreachable / error message on UI
+- [x] **4.4** Status indicator: reachable / unreachable / error message on UI
   - Security: sanitize/truncate error messages so they don’t leak local paths unnecessarily
   - Docs: status meanings
-- [ ] **4.5** Unit tests with mocked SSH client (success + auth failure + timeout)
+- [x] **4.5** Unit tests with mocked SSH client (success + auth failure + timeout)
   - Security: no real SSH to external hosts in CI
   - Docs: note mocks in metrics doc
-- [ ] **4.6** CI green (Paramiko installed in workflow)
+- [x] **4.6** CI green (Paramiko installed in workflow)
 
 ---
 
 ## Phase 5 — Dashboard UX polish
 
-- [ ] **5.1** Dashboard cards with live summary metrics via one batch JSON API
+- [x] **5.1** Dashboard cards with live summary metrics via one batch JSON API
   - Security: login-required API; no secrets in payload
   - Docs: API shape
-- [ ] **5.2** Auto-refresh ~10s + manual refresh control
+- [x] **5.2** Auto-refresh ~10s + manual refresh control
   - Security: refresh only hits our APIs; no third-party script CDNs unless needed (prefer local static)
   - Docs: refresh behavior
-- [ ] **5.3** Empty state + friendly errors when no servers / unreachable
+- [x] **5.3** Empty state + friendly errors when no servers / unreachable
   - Security: user-safe error copy
   - Docs: optional
-- [ ] **5.4** Light UI polish (CSS only) — keep read-only feel
+- [x] **5.4** Light UI polish (CSS only) — keep read-only feel
   - Security: no XSS via unescaped metric strings (Jinja escaping)
   - Docs: none required beyond PRD F1
 
@@ -125,13 +129,15 @@ See [servers.md](./servers.md). CI still runs full `pytest` (same workflow).
 
 ## Phase 6 — CI/CD (GitHub Actions) + final docs
 
-- [ ] **6.1** Finalize `.github/workflows/ci.yml`: lint optional, **pytest required**, cache pip
+See [ci.md](./ci.md).
+
+- [x] **6.1** Finalize `.github/workflows/ci.yml`: lint optional, **pytest required**, cache pip
   - Security: `permissions: contents: read`; no deploy keys; env secrets only for CI dummies
   - Docs: “CI” section in `docs/TODO.md` or short `docs/ci.md`
-- [ ] **6.2** Add workflow_dispatch for manual CI runs (optional)
+- [x] **6.2** Add workflow_dispatch for manual CI runs (optional)
   - Security: same as above
   - Docs: how to re-run checks
-- [ ] **6.3** Acceptance pass against PRD §8 checklist; tick boxes in `docs/requirements.md`
+- [x] **6.3** Acceptance pass against PRD §8 checklist; tick boxes in `docs/requirements.md`
   - Security: confirm hashed password, localhost bind, no plaintext secrets in repo
   - Docs: mark demo “done locally” with 3-line run instructions only
 
@@ -146,6 +152,8 @@ cp .env.example .env   # set FLASK_SECRET_KEY / ADMIN_PASSWORD
 python app.py          # http://127.0.0.1:5000  (admin / ADMIN_PASSWORD)
 pytest
 ```
+
+Demo done locally: Flask + SQLite, bind `127.0.0.1`, hashed admin password, read-only metrics.
 
 ---
 

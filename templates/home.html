@@ -5,42 +5,63 @@
   <p class="eyebrow">Read-only · Local demo</p>
   <h1>Demo<span>Monitor</span></h1>
   <p class="lede">
-    Server inventory for Linux hosts. Metrics collection lands in the next phase.
+    Live CPU, memory, network, and listening ports for registered Linux hosts.
   </p>
+  <div class="toolbar">
+    <button type="button" class="btn ghost-btn" id="refresh-btn">Refresh now</button>
+    <a class="btn primary" href="{{ url_for('server_new') }}">Add server</a>
+    <span class="meta" id="refresh-meta">Auto-refresh every 10s</span>
+  </div>
 </section>
 
-<section class="dash-shell" aria-label="Server list">
+<section class="dash-shell" aria-label="Server dashboard" id="dashboard-root"
+         data-has-servers="{{ '1' if servers else '0' }}">
   <div class="dash-head">
     <h2>Servers</h2>
-    <p class="meta">
+    <p class="meta" id="dash-count">
       {% if servers %}{{ servers|length }} registered{% else %}No servers yet{% endif %}
-      · <a href="{{ url_for('server_new') }}">Add server</a>
     </p>
   </div>
 
   {% if not servers %}
-  <div class="empty-card">
-    <p>No servers registered. Add a local or remote Linux host to get started.</p>
+  <div class="empty-card" id="empty-state">
+    <p>No servers registered. Add a local or remote Linux host to start monitoring.</p>
   </div>
   {% else %}
-  <ul class="server-list">
+  <div class="server-cards" id="server-cards">
     {% for s in servers %}
-    <li class="server-row">
-      <div class="server-main">
-        <strong>{{ s.display_name }}</strong>
-        <span class="mono">{{ s.hostname }}{% if s.auth_type != 'local' %}:{{ s.ssh_port }}{% endif %}</span>
-        <span class="badge">{{ s.auth_type }}</span>
+    <article class="server-card" data-server-id="{{ s.id }}" id="server-card-{{ s.id }}">
+      <div class="server-card-top">
+        <div>
+          <a class="server-title" href="{{ url_for('server_detail', server_id=s.id) }}">{{ s.display_name }}</a>
+          <p class="mono">{{ s.hostname }}{% if s.auth_type != 'local' %}:{{ s.ssh_port }}{% endif %}</p>
+        </div>
+        <span class="status-pill status-loading" data-role="status">loading</span>
       </div>
+      <dl class="metric-summary">
+        <div><dt>CPU</dt><dd data-role="cpu">—</dd></div>
+        <div><dt>Mem</dt><dd data-role="mem">—</dd></div>
+        <div><dt>Net rx</dt><dd data-role="rx">—</dd></div>
+        <div><dt>Net tx</dt><dd data-role="tx">—</dd></div>
+      </dl>
+      <p class="card-error" data-role="error" hidden></p>
       <div class="server-actions">
+        <a class="btn ghost-btn" href="{{ url_for('server_detail', server_id=s.id) }}">Details</a>
         <a class="btn ghost-btn" href="{{ url_for('server_edit', server_id=s.id) }}">Edit</a>
         <form method="post" action="{{ url_for('server_delete', server_id=s.id) }}" class="inline-form"
               onsubmit="return confirm('Remove server {{ s.display_name }}?');">
           <button type="submit" class="btn danger">Delete</button>
         </form>
       </div>
-    </li>
+    </article>
     {% endfor %}
-  </ul>
+  </div>
   {% endif %}
 </section>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/metrics.js') }}"></script>
+<script>
+  DemoMonitor.initDashboard();
+</script>
 {% endblock %}
